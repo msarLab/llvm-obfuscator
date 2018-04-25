@@ -30,10 +30,19 @@
 // Namespace
 using namespace std;
 
-namespace llvm {
-	Pass *createFlattening();
-	Pass *createFlattening(bool flag);
-}
+class Flattening {
+    bool flag;
+
+public:
+    Flattening(bool flag) : flag(flag) {}
+
+    bool runOnFunction(Function &F);
+
+private:
+    bool flatten(Function *f);
+};
+
+Flattening *createFlattening(bool flag);
 
 #endif
 

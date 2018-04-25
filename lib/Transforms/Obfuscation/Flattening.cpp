@@ -22,22 +22,8 @@ using namespace llvm;
 // Stats
 STATISTIC(Flattened, "Functions flattened");
 
-namespace {
-struct Flattening : public FunctionPass {
-  static char ID;  // Pass identification, replacement for typeid
-  bool flag;
-
-  Flattening() : FunctionPass(ID) {}
-  Flattening(bool flag) : FunctionPass(ID) { this->flag = flag; }
-
-  bool runOnFunction(Function &F);
-  bool flatten(Function *f);
-};
-}
-
 char Flattening::ID = 0;
 static RegisterPass<Flattening> X("flattening", "Call graph flattening");
-Pass *llvm::createFlattening(bool flag) { return new Flattening(flag); }
 
 bool Flattening::runOnFunction(Function &F) {
   Function *tmp = &F;

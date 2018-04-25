@@ -26,32 +26,6 @@ STATISTIC(Split, "Basicblock splitted");
 static cl::opt<int> SplitNum("split_num", cl::init(2),
                              cl::desc("Split <split_num> time each BB"));
 
-namespace {
-struct SplitBasicBlock : public FunctionPass {
-  static char ID; // Pass identification, replacement for typeid
-  bool flag;
-
-  SplitBasicBlock() : FunctionPass(ID) {}
-  SplitBasicBlock(bool flag) : FunctionPass(ID) {
-    
-    this->flag = flag;
-  }
-
-  bool runOnFunction(Function &F);
-  void split(Function *f);
-
-  bool containsPHI(BasicBlock *b);
-  void shuffle(std::vector<int> &vec);
-};
-}
-
-char SplitBasicBlock::ID = 0;
-static RegisterPass<SplitBasicBlock> X("splitbbl", "BasicBlock splitting");
-
-Pass *llvm::createSplitBasicBlock(bool flag) {
-  return new SplitBasicBlock(flag);
-}
-
 bool SplitBasicBlock::runOnFunction(Function &F) {
   // Check if the number of applications is correct
   if (!((SplitNum > 1) && (SplitNum <= 10))) {

@@ -27,9 +27,24 @@
 #include "llvm/Transforms/Obfuscation/Utils.h"
 #include "llvm/CryptoUtils.h"
 
-// Namespace
-namespace llvm {
-	Pass *createSplitBasicBlock(bool flag);
+class SplitBasicBlock {
+    bool flag;
+public:
+    SplitBasicBlock(bool flag) : flag(flag) {}
+
+    bool runOnFunction(Function &F);
+
+private:
+    void split(Function *f);
+
+    bool containsPHI(BasicBlock *b);
+
+    void shuffle(std::vector<int> &vec);
+};
+
+SplitBasicBlock *createSplitBasicBlock(bool flag) {
+    return new SplitBasicBlock(flag);
 }
+
 #endif
 

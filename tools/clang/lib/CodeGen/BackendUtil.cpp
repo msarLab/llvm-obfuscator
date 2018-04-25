@@ -56,6 +56,7 @@
 #include "llvm/Transforms/Scalar/GVN.h"
 #include "llvm/Transforms/Utils/NameAnonGlobals.h"
 #include "llvm/Transforms/Utils/SymbolRewriter.h"
+#include "llvm/Transforms/Obfuscation/Obfuscation.h"
 #include <memory>
 using namespace clang;
 using namespace llvm;
@@ -144,6 +145,10 @@ private:
   const CodeGenOptions &CGOpts;
   const LangOptions &LangOpts;
 };
+}
+
+static void addObfuscationPass(const PassManagerBuilder &Builder, PassManagerBase &PM) {
+  PM.add(createObfuscationPass());
 }
 
 static void addObjCARCAPElimPass(const PassManagerBuilder &Builder, PassManagerBase &PM) {
@@ -624,6 +629,10 @@ void EmitAssemblyHelper::CreatePasses(legacy::PassManager &MPM,
   if (!CodeGenOpts.SampleProfileFile.empty())
     PMBuilder.PGOSampleUse = CodeGenOpts.SampleProfileFile;
 
+  if (CodeGenOpts.OptimizationLevel == 0)
+    PMBuilder.addExtension(PassManagerBuilder::EP_EnabledOnOptLevel0, addObfuscationPass);
+  else
+    PMBuilder.addExtension(PassManagerBuilder::EP_OptimizerLast, addObfuscationPass);
   PMBuilder.populateFunctionPassManager(FPM);
   PMBuilder.populateModulePassManager(MPM);
 }

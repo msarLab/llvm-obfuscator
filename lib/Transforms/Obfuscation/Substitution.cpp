@@ -43,66 +43,26 @@ STATISTIC(And, "And substitued");
 STATISTIC(Or, "Or substitued");
 STATISTIC(Xor, "Xor substitued");
 
-namespace {
+Substitution::Substitution(bool flag) : flag(flag) {
+  this->flag = flag;
+  funcAdd[0] = &Substitution::addNeg;
+  funcAdd[1] = &Substitution::addDoubleNeg;
+  funcAdd[2] = &Substitution::addRand;
+  funcAdd[3] = &Substitution::addRand2;
 
-struct Substitution : public FunctionPass {
-  static char ID; // Pass identification, replacement for typeid
-  void (Substitution::*funcAdd[NUMBER_ADD_SUBST])(BinaryOperator *bo);
-  void (Substitution::*funcSub[NUMBER_SUB_SUBST])(BinaryOperator *bo);
-  void (Substitution::*funcAnd[NUMBER_AND_SUBST])(BinaryOperator *bo);
-  void (Substitution::*funcOr[NUMBER_OR_SUBST])(BinaryOperator *bo);
-  void (Substitution::*funcXor[NUMBER_XOR_SUBST])(BinaryOperator *bo);
-  bool flag;
+  funcSub[0] = &Substitution::subNeg;
+  funcSub[1] = &Substitution::subRand;
+  funcSub[2] = &Substitution::subRand2;
 
-  Substitution() : FunctionPass(ID) {}
+  funcAnd[0] = &Substitution::andSubstitution;
+  funcAnd[1] = &Substitution::andSubstitutionRand;
 
-  Substitution(bool flag) : FunctionPass(ID) {
-    this->flag = flag;
-    funcAdd[0] = &Substitution::addNeg;
-    funcAdd[1] = &Substitution::addDoubleNeg;
-    funcAdd[2] = &Substitution::addRand;
-    funcAdd[3] = &Substitution::addRand2;
+  funcOr[0] = &Substitution::orSubstitution;
+  funcOr[1] = &Substitution::orSubstitutionRand;
 
-    funcSub[0] = &Substitution::subNeg;
-    funcSub[1] = &Substitution::subRand;
-    funcSub[2] = &Substitution::subRand2;
-
-    funcAnd[0] = &Substitution::andSubstitution;
-    funcAnd[1] = &Substitution::andSubstitutionRand;
-
-    funcOr[0] = &Substitution::orSubstitution;
-    funcOr[1] = &Substitution::orSubstitutionRand;
-
-    funcXor[0] = &Substitution::xorSubstitution;
-    funcXor[1] = &Substitution::xorSubstitutionRand;
-  }
-
-  bool runOnFunction(Function &F);
-  bool substitute(Function *f);
-
-  void addNeg(BinaryOperator *bo);
-  void addDoubleNeg(BinaryOperator *bo);
-  void addRand(BinaryOperator *bo);
-  void addRand2(BinaryOperator *bo);
-
-  void subNeg(BinaryOperator *bo);
-  void subRand(BinaryOperator *bo);
-  void subRand2(BinaryOperator *bo);
-
-  void andSubstitution(BinaryOperator *bo);
-  void andSubstitutionRand(BinaryOperator *bo);
-
-  void orSubstitution(BinaryOperator *bo);
-  void orSubstitutionRand(BinaryOperator *bo);
-
-  void xorSubstitution(BinaryOperator *bo);
-  void xorSubstitutionRand(BinaryOperator *bo);
-};
+  funcXor[0] = &Substitution::xorSubstitution;
+  funcXor[1] = &Substitution::xorSubstitutionRand;
 }
-
-char Substitution::ID = 0;
-static RegisterPass<Substitution> X("substitution", "operators substitution");
-Pass *llvm::createSubstitution(bool flag) { return new Substitution(flag); }
 
 bool Substitution::runOnFunction(Function &F) {
    // Check if the percentage is correct

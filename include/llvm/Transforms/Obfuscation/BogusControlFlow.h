@@ -41,9 +41,25 @@ using namespace std;
 using namespace llvm;
 
 // Namespace
-namespace llvm {
-	Pass *createBogus ();
-	Pass *createBogus (bool flag);
+class BogusControlFlow {
+    bool flag;
+
+public:
+    BogusControlFlow(bool flag) : flag(flag) { }
+
+    bool runOnFunction(Function &F);
+
+private:
+    bool isInvoke(Function *f);
+    void bogus(Function &F);
+    void addBogusFlow(BasicBlock *basicBlock, Function &F);
+    BasicBlock *createAlteredBasicBlock(BasicBlock *basicBlock, const Twine &Name = "gen", Function *F = 0);
+    bool doF(Module &M);
+};
+
+BogusControlFlow *createBogus(bool flag) {
+    return new BogusControlFlow(flag);
 }
+
 #endif
 
