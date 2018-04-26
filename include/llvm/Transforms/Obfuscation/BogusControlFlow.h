@@ -53,13 +53,10 @@ private:
     bool isInvoke(Function *f);
     void bogus(Function &F);
     void addBogusFlow(BasicBlock *basicBlock, Function &F);
-    BasicBlock *createAlteredBasicBlock(BasicBlock *basicBlock, const Twine &Name = "gen", Function *F = 0);
+    BasicBlock *createAlteredBasicBlock(BasicBlock *basicBlock, const Twine &Name, Function *F);
     bool doF(Module &M);
 };
 
-BogusControlFlow *createBogus(bool flag) {
-    return new BogusControlFlow(flag);
-}
 
 #endif
 

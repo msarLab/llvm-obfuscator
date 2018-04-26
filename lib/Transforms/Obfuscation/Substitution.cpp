@@ -13,18 +13,11 @@
 //===----------------------------------------------------------------------===//
 
 #include "llvm/Transforms/Obfuscation/Substitution.h"
-#include "llvm/IR/LLVMContext.h"
 #include "llvm/Support/raw_ostream.h"
 #include "llvm/Transforms/Obfuscation/Utils.h"
-#include "llvm/IR/Intrinsics.h"
 
 #define DEBUG_TYPE "substitution"
 
-#define NUMBER_ADD_SUBST 4
-#define NUMBER_SUB_SUBST 3
-#define NUMBER_AND_SUBST 2
-#define NUMBER_OR_SUBST 2
-#define NUMBER_XOR_SUBST 2
 
 static cl::opt<int>
 ObfTimes("sub_loop",

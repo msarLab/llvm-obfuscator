@@ -25,6 +25,12 @@
 #include "llvm/Support/CommandLine.h"
 #include "llvm/CryptoUtils.h"
 
+
+#define NUMBER_ADD_SUBST 4
+#define NUMBER_SUB_SUBST 3
+#define NUMBER_AND_SUBST 2
+#define NUMBER_OR_SUBST 2
+#define NUMBER_XOR_SUBST 2
 // Namespace
 using namespace llvm;
 using namespace std;
@@ -76,10 +82,6 @@ private:
 
     void xorSubstitutionRand(BinaryOperator *bo);
 };
-
-Substitution *createSubstitution(bool flag) {
-    return new Substitution(flag);
-}
 
 #endif
 

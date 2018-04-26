@@ -1,28 +1,7 @@
 #define DEBUG_TYPE "objdiv"
-
-#include <string>
-#include <strstream>
-
-#include "llvm/ADT/Statistic.h"
-#include "llvm/IR/Function.h"
-#include "llvm/IR/Constants.h"
-#include "llvm/IR/Module.h"
-#include "llvm/IR/Value.h"
-#include "llvm/IR/CallSite.h"
-#include "llvm/Pass.h"
-#include "llvm/Support/raw_ostream.h"
-#include "llvm/CryptoUtils.h"
 #include "llvm/Transforms/Obfuscation/StringObfuscation.h"
 
-using namespace llvm;
-
 STATISTIC(GlobalsEncoded, "Counts number of global variables encoded");
-
-struct encVar {
-public:
-    GlobalVariable *var;
-    char key;
-};
 
 bool StringObfuscation::runOnModule(Module &M) {
     if (!flag)

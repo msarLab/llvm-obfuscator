@@ -677,7 +677,6 @@ void PassManagerBuilder::populateModulePassManager(
   // resulted in single-entry-single-exit or empty blocks. Clean up the CFG.
   MPM.add(createCFGSimplificationPass());
 
-  MPM.add(createSubstitution(Substitution));
   addExtensionsToPM(EP_OptimizerLast, MPM);
 }
 

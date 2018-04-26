@@ -42,9 +42,5 @@ private:
     void shuffle(std::vector<int> &vec);
 };
 
-SplitBasicBlock *createSplitBasicBlock(bool flag) {
-    return new SplitBasicBlock(flag);
-}
-
 #endif
 

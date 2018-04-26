@@ -321,7 +321,7 @@ void BogusControlFlow::addBogusFlow(BasicBlock *basicBlock, Function &F) {
  * behave nicely.
  */
 BasicBlock *BogusControlFlow::createAlteredBasicBlock(BasicBlock *basicBlock,
-                                            const Twine &Name = "gen", Function *F = 0) {
+                                            const Twine &Name, Function *F) {
     // Useful to remap the informations concerning instructions.
     ValueToValueMapTy VMap;
     BasicBlock *alteredBB = llvm::CloneBasicBlock(basicBlock, VMap, Name, F);

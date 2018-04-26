@@ -12,6 +12,12 @@
 //===----------------------------------------------------------------------===//
 
 #include "llvm/Transforms/Obfuscation/Obfuscation.h"
+#include "llvm/Transforms/Obfuscation/Flattening.h"
+#include "llvm/Transforms/Obfuscation/StringObfuscation.h"
+#include "llvm/Transforms/Obfuscation/Substitution.h"
+#include "llvm/Transforms/Obfuscation/BogusControlFlow.h"
+#include "llvm/Transforms/Obfuscation/Split.h"
+#include "llvm/Transforms/Obfuscation/IndirectBranch.h"
 using namespace llvm;
 using namespace std;
 // Flags for obfuscation
@@ -38,6 +44,9 @@ static cl::opt<std::string> AesSeed("aesSeed", cl::init(""),
 static cl::opt<bool> SplitFlag("split", cl::init(false),
                            cl::desc("Enable basic block splitting"));
 
+static cl::opt<bool> IndirectFlag("indir", cl::init(false),
+                            cl::desc("Enable indirect branch."));
+
 
 
 // End Obfuscator Options
@@ -51,40 +60,48 @@ namespace llvm {
 
         bool runOnModule(Module &M) override {
 
-            SplitBasicBlock *split = createSplitBasicBlock(SplitFlag);
+            SplitBasicBlock *split = new SplitBasicBlock(SplitFlag);
             for (Module::iterator I = M.begin(), E = M.end(); I != E; I++) {
                 if (isa<Function>(&*I)) {
                     split->runOnFunction(*I);
                 }
             }
 
-            BogusControlFlow *bogus = createBogus(BogusControlFlowFlag);
+            BogusControlFlow *bogus = new BogusControlFlow(BogusControlFlowFlag);
             for (Module::iterator I = M.begin(), E = M.end(); I != E; I++) {
                 if (isa<Function>(&*I)) {
                     bogus->runOnFunction(*I);
                 }
             }
 
-            Flattening *flattening = createFlattening(FlatteningFlag);
+            Flattening *flattening = new Flattening(FlatteningFlag);
             for (Module::iterator I = M.begin(), E = M.end(); I != E; I++) {
                 if (isa<Function>(&*I)) {
                     flattening->runOnFunction(*I);
                 }
             }
 
-            Substitution *substitution = createSubstitution(SubstitutionFlag);
+            IndirectBranch *idbranch = new IndirectBranch(IndirectFlag);
+            for (Module::iterator I = M.begin(), E = M.end(); I != E; I++) {
+                if (isa<Function>(&*I)) {
+                    idbranch->runOnFunction(*I);
+                }
+            }
+
+            Substitution *substitution = new Substitution(SubstitutionFlag);
             for (Module::iterator I = M.begin(), E = M.end(); I != E; I++) {
                 if (isa<Function>(&*I)) {
                     substitution->runOnFunction(*I);
                 }
             }
 
-            StringObfuscation *strobf = createStringObfuscation(StringObfFlag);
+            StringObfuscation *strobf = new StringObfuscation(StringObfFlag);
             strobf->runOnModule(M);
 
             delete split;
             delete bogus;
             delete flattening;
+            delete idbranch;
             delete substitution;
             delete strobf;
             return true;

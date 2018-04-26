@@ -42,7 +42,6 @@ private:
     bool flatten(Function *f);
 };
 
-Flattening *createFlattening(bool flag);
 
 #endif
 

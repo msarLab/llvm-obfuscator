@@ -22,9 +22,6 @@ using namespace llvm;
 // Stats
 STATISTIC(Flattened, "Functions flattened");
 
-char Flattening::ID = 0;
-static RegisterPass<Flattening> X("flattening", "Call graph flattening");
-
 bool Flattening::runOnFunction(Function &F) {
   Function *tmp = &F;
   // Do we obfuscate

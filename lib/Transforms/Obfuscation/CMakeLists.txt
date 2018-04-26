@@ -1,4 +1,5 @@
 add_llvm_library(LLVMObfuscation
+        IndirectBranch.cpp
         Obfuscation.cpp
   CryptoUtils.cpp
   Substitution.cpp
