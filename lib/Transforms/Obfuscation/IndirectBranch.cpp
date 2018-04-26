@@ -6,7 +6,7 @@ bool IndirectBranch::runOnFunction(Function &F) {
 
     Function *tmp = &F;
     // Do we obfuscate
-    if (toObfuscate(flag, tmp, "fla")) {
+    if (toObfuscate(flag, tmp, "indir")) {
         if (!initBranch(F)) {
             llvm::errs() << "indirect branch failed.\n";
             return false;
